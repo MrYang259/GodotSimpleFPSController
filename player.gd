@@ -24,15 +24,10 @@ func _unhandled_input(event):
 	if event is InputEventMouseMotion: #处理相机旋转和输入设备切换
 		PlayerControlGlobal.Input_Flag = 1 #模式为键鼠模式
 		PlayerControlGlobal.DeviceID = event.device #设置设备ID，目前未使用，若需添加双人分屏则可用
-		if PlayerControlGlobal.is_menu_closed == false: #菜单状态下
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		else: #若处于游戏中
-			_handle_mouse_camera_rotation(event) #根据鼠标移动旋转相机
+		_handle_mouse_camera_rotation(event) #根据鼠标移动旋转相机
 	elif event is InputEventKey: #键盘按下
 		PlayerControlGlobal.DeviceID = event.device 
 		PlayerControlGlobal.Input_Flag = 1
-		if PlayerControlGlobal.is_menu_closed == false:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		_handle_key_input() #处理键盘事件
 	elif event is InputEventJoypadMotion: #手柄摇杆触动，由于手柄视角控制的特殊性，需要在_physics_process(delta)中处理
 		PlayerControlGlobal.DeviceID = event.device
@@ -61,8 +56,6 @@ func _unhandled_input(event):
 	elif event is InputEventMouseButton: #鼠标按键按下
 		PlayerControlGlobal.DeviceID = event.device
 		PlayerControlGlobal.Input_Flag = 1
-		if PlayerControlGlobal.is_menu_closed == false:
-			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 #键鼠部分开始
 func _handle_mouse_camera_rotation(event): #处理鼠标输入的相机旋转
@@ -72,13 +65,13 @@ func _handle_mouse_camera_rotation(event): #处理鼠标输入的相机旋转
 	CamHead.rotation.x = clamp(CamHead.rotation.x, Min_Camera_Angle, Max_Camera_Angle) #限制相机俯仰角
 
 func _handle_key_input(): #处理键盘事件
-	if Input.is_action_pressed("Sprint") and PlayerControlGlobal.is_menu_closed: #疾跑
+	if Input.is_action_pressed("Sprint"): #疾跑
 		if sprint_flag == false and crouch_flag == false:
 			sprint_flag = true
 		else:
 			sprint_flag = false
 
-	if Input.is_action_pressed("UseFlashLight") and PlayerControlGlobal.is_menu_closed:
+	if Input.is_action_pressed("UseFlashLight"):
 		if flashl_flag == false:
 			FlashL.show()
 			flashl_flag = true
@@ -89,22 +82,21 @@ func _handle_key_input(): #处理键盘事件
 
 #手柄部分开始
 func _handle_joystick_camera_rotation(ID): #处理摇杆相机旋转，由于操作特殊性需要在_physics_process(delta)中调用
-	if PlayerControlGlobal.is_menu_closed:
-		xAxis = Input.get_joy_axis(ID, JOY_AXIS_RIGHT_X) #赋值摇杆推拉数据
-		yAxis = Input.get_joy_axis(ID, JOY_AXIS_RIGHT_Y)
-		if PlayerControlGlobal.Input_Flag > 1 and (abs(xAxis) > PlayerControlGlobal.Dead_Zone or abs(yAxis) > PlayerControlGlobal.Dead_Zone): 
-			rotate_y(-xAxis * PlayerControlGlobal.Joystiock_Sensity)
-			CamHead.rotate_x(yAxis * PlayerControlGlobal.Joystiock_Sensity * PlayerControlGlobal.Reverse_YAxis)
-			CamHead.rotation.x = clamp(CamHead.rotation.x, Min_Camera_Angle, Max_Camera_Angle)
+	xAxis = Input.get_joy_axis(ID, JOY_AXIS_RIGHT_X) #赋值摇杆推拉数据
+	yAxis = Input.get_joy_axis(ID, JOY_AXIS_RIGHT_Y)
+	if PlayerControlGlobal.Input_Flag > 1 and (abs(xAxis) > PlayerControlGlobal.Dead_Zone or abs(yAxis) > PlayerControlGlobal.Dead_Zone): 
+		rotate_y(-xAxis * PlayerControlGlobal.Joystiock_Sensity)
+		CamHead.rotate_x(yAxis * PlayerControlGlobal.Joystiock_Sensity * PlayerControlGlobal.Reverse_YAxis)
+		CamHead.rotation.x = clamp(CamHead.rotation.x, Min_Camera_Angle, Max_Camera_Angle)
 
 func _handle_gamepad_button(): 
-	if Input.is_action_pressed("Sprint") and PlayerControlGlobal.is_menu_closed: #疾跑
+	if Input.is_action_pressed("Sprint"): #疾跑
 		if sprint_flag == false:
 			sprint_flag = true
 		else:
 			sprint_flag = false
 
-	if Input.is_action_pressed("UseFlashLight") and PlayerControlGlobal.is_menu_closed:
+	if Input.is_action_pressed("UseFlashLight"):
 		if flashl_flag == false:
 			FlashL.show()
 			flashl_flag = true
@@ -118,10 +110,10 @@ func _physics_process(delta): #每帧运行一次，delta等于当前帧的生�
 	_handle_joystick_camera_rotation(PlayerControlGlobal.DeviceID) #处理摇杆的相机旋转
 	
 	#根据输入和状态生成运动矢量方向 开始
-	if PlayerControlGlobal.Input_Flag == 1 and PlayerControlGlobal.is_menu_closed: #键鼠，输入为整数
+	if PlayerControlGlobal.Input_Flag == 1: #键鼠，输入为整数
 		direction = Input.get_vector("Motion_Leftward", "Motion_Rightward", "Motion_Forward", "Motion_Backward")
 		direction = (transform.basis * Vector3(direction.x, 0, direction.y)).normalized() #方向矢量归一化，避免斜向移动被加速
-	elif PlayerControlGlobal.Input_Flag > 1 and PlayerControlGlobal.is_menu_closed: #手柄，输入为浮点
+	elif PlayerControlGlobal.Input_Flag > 1: #手柄，输入为浮点
 		direction.x = Input.get_axis("Motion_Leftward", "Motion_Rightward")
 		direction.y = Input.get_axis("Motion_Forward", "Motion_Backward")
 		if direction.length() > 1.0:
@@ -129,20 +121,20 @@ func _physics_process(delta): #每帧运行一次，delta等于当前帧的生�
 		direction = (transform.basis * Vector3(direction.x, 0, direction.y))
 	#根据输入和状态生成运动矢量方向 结束
 	
-	if Input.is_action_pressed("Jump") and is_on_floor() and PlayerControlGlobal.is_menu_closed and PlayerControlGlobal.Press_Captured == false: #跳跃
+	if Input.is_action_pressed("Jump") and is_on_floor() and PlayerControlGlobal.Press_Captured == false: #跳跃
 		PlayerControlGlobal.Press_Captured = true
 		velocity.y += Jump_Force
 	if Input.is_action_just_released("Jump"):
 		PlayerControlGlobal.Press_Captured = false
 	
-	if is_on_floor() and PlayerControlGlobal.is_menu_closed: #地面
+	if is_on_floor() and PlayerControlGlobal: #地面
 		if sprint_flag == false:
 			velocity.x = lerp(velocity.x, direction.x * Move_Speed, Acceleration * delta) #使用加速度控制速度
 			velocity.z = lerp(velocity.z, direction.z * Move_Speed, Acceleration * delta)
 		else:
 			velocity.x = lerp(velocity.x, direction.x * Sprint_Speed, Acceleration * delta)
 			velocity.z = lerp(velocity.z, direction.z * Sprint_Speed, Acceleration * delta)
-	elif PlayerControlGlobal.is_menu_closed: #空中
+	elif PlayerControlGlobal: #空中
 		velocity.z = lerp(velocity_last_frame.y, direction.z * Air_Speed, Air_Accel * delta) #控制减弱
 		velocity.x = lerp(velocity_last_frame.x, direction.x * Air_Speed, Air_Accel * delta)
 	
