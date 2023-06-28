@@ -33,7 +33,7 @@ func _unhandled_input(event):
 		PlayerControlGlobal.Input_Flag = 1
 		if PlayerControlGlobal.is_menu_closed == false:
 			Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-		_handle_key_input() #处理键盘事件(菜单部分)
+		_handle_key_input() #处理键盘事件
 	elif event is InputEventJoypadMotion: #手柄摇杆触动，由于手柄视角控制的特殊性，需要在_physics_process(delta)中处理
 		PlayerControlGlobal.DeviceID = event.device
 		xAxis = Input.get_joy_axis(PlayerControlGlobal.DeviceID,JOY_AXIS_LEFT_X) + Input.get_joy_axis(PlayerControlGlobal.DeviceID,JOY_AXIS_RIGHT_X)
