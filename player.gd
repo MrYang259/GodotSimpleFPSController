@@ -150,6 +150,5 @@ func _physics_process(delta): #每帧运行一次，delta等于当前帧的生�
 		sprint_flag = false
 	
 	velocity_last_frame = Vector2(velocity.x, velocity.z) #储存当前帧的水平速度
-	if PlayerControlGlobal.is_menu_closed: #多人游戏需删除此条件
-		velocity.y = lerp(velocity.y, Max_FallingSpeed, PlayerControlGlobal.GlobalGravity * delta * 0.013) #重力影响，默认的重力太大了
-		move_and_slide()
+	velocity.y = lerp(velocity.y, Max_FallingSpeed, PlayerControlGlobal.GlobalGravity * delta * 0.013) #重力影响，默认的重力太大了
+	move_and_slide()
