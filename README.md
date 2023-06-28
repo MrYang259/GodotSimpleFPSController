@@ -7,6 +7,8 @@
    
 # 特点 
 
+WASD移动，F开关手电，Shift疾跑，手柄控制类似光环的归复者
+
 你可以在键鼠和手柄间无缝切换
 
 拥有基本的疾跑、跳跃和手电
@@ -22,6 +24,9 @@ Simple first person controller(For Godot engine)
 GDScript based FP controller, joypad surpported, Godot version 4.0.3 or later
 
 # Feature
+
+WASD to move,F to toggle flashlight, shift to run, joypad is similar to HALO's reclaimer settings
+
 You can swtich to joypads seamlessly
 
 Basic sprint jump and flashlight
