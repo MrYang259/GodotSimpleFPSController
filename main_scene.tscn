@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://fhg3t1mdfmnm"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_u5due"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lap3q"]
+size = Vector3(15, 1, 15)
+
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_naiq1"]
+data = PackedVector3Array(-7.5, 0.5, 7.5, 7.5, 0.5, 7.5, -7.5, -0.5, 7.5, 7.5, 0.5, 7.5, 7.5, -0.5, 7.5, -7.5, -0.5, 7.5, 7.5, 0.5, -7.5, -7.5, 0.5, -7.5, 7.5, -0.5, -7.5, -7.5, 0.5, -7.5, -7.5, -0.5, -7.5, 7.5, -0.5, -7.5, 7.5, 0.5, 7.5, 7.5, 0.5, -7.5, 7.5, -0.5, 7.5, 7.5, 0.5, -7.5, 7.5, -0.5, -7.5, 7.5, -0.5, 7.5, -7.5, 0.5, -7.5, -7.5, 0.5, 7.5, -7.5, -0.5, -7.5, -7.5, 0.5, 7.5, -7.5, -0.5, 7.5, -7.5, -0.5, -7.5, 7.5, 0.5, 7.5, -7.5, 0.5, 7.5, 7.5, 0.5, -7.5, -7.5, 0.5, 7.5, -7.5, 0.5, -7.5, 7.5, 0.5, -7.5, -7.5, -0.5, 7.5, 7.5, -0.5, 7.5, -7.5, -0.5, -7.5, 7.5, -0.5, 7.5, 7.5, -0.5, -7.5, -7.5, -0.5, -7.5)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_nr205"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_u6los"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_j5bk4"]
+
+[sub_resource type="Sky" id="Sky_ts31j"]
+sky_material = SubResource("ProceduralSkyMaterial_j5bk4")
+
+[sub_resource type="Environment" id="Environment_587f8"]
+background_mode = 2
+sky = SubResource("Sky_ts31j")
+
+[node name="MainNode" type="Node3D"]
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+mesh = SubResource("BoxMesh_lap3q")
+
+[node name="Coll" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.6, 0)
+shape = SubResource("ConcavePolygonShape3D_naiq1")
+
+[node name="Player" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("1_u5due")
+
+[node name="BodyMesh" type="MeshInstance3D" parent="Player"]
+mesh = SubResource("CapsuleMesh_nr205")
+
+[node name="BodyColl" type="CollisionShape3D" parent="Player"]
+shape = SubResource("CapsuleShape3D_u6los")
+
+[node name="CamPivot" type="Node3D" parent="Player"]
+
+[node name="Camera3D" type="Camera3D" parent="Player/CamPivot"]
+
+[node name="SpotLight3D" type="SpotLight3D" parent="Player/CamPivot"]
+visible = false
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_587f8")
