@@ -9,7 +9,6 @@ var Input_Flag = 1 #定义输入模式，1为鼠标键盘，2为Xbox手柄，3�
 var Devices: PackedInt32Array #用于获取所有输入设备的id
 var GamePad_Name: String #用于获得手柄名称
 var DeviceID = 0 #存储激活的输入设备ID
-var is_menu_closed = true #定义当前状态是否在菜单中
 var menu_level = 0 #菜单层级，最后一级为0
 var screen_res:Vector2 #声明屏幕分辨率向量
 var Press_Captured = false #用于按键捕获标志，防止一次按键多次处理
